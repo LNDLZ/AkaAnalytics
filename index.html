@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKA Golf Balls · Reporte de Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --deep: #0a0a0a;
+    --card: #0f0f0f;
+    --border: #1a1a1a;
+    --border-glow: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #7a6030;
+    --green: #2d6a4f;
+    --green-light: #52b788;
+    --green-bright: #74c69d;
+    --white: #f5f0e8;
+    --muted: #555;
+    --text-dim: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 32px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .brand-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .brand-icon { font-size: 20px; opacity: 0.7; }
+
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .brand-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold-dim); }
+
+  .brand-sub {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .report-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .report-title em { font-style: italic; color: var(--gold-light); }
+
+  .report-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+
+  .meta-item {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .meta-item span { color: var(--text-dim); }
+
+  /* PERIOD BAR */
+  .period-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 16px 24px;
+    margin-bottom: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .period-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .period-dates {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+
+  .platform-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border: 1px solid var(--border-glow);
+    padding: 6px 14px;
+  }
+
+  .platform-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    box-shadow: 0 0 6px var(--green-bright);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 28px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    border-left: 2px solid var(--gold-dim);
+    padding-left: 10px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .section-title em { font-style: italic; color: var(--gold-light); }
+
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .kpi-card:hover { background: #111; }
+
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .kpi-card:hover::after { opacity: 1; }
+
+  .kpi-label {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value.gold { color: var(--gold-light); }
+  .kpi-value.green { color: var(--green-bright); }
+
+  .kpi-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+
+  .kpi-accent {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+  }
+
+  /* CHART */
+  .chart-section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .chart-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 32px 28px 24px;
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .legend-dot { width: 8px; height: 8px; border-radius: 1px; }
+
+  .chart-container { position: relative; height: 220px; }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 100%;
+    padding-bottom: 32px;
+  }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+    position: relative;
+  }
+
+  .bars-inner {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: calc(100% - 32px);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bar {
+    width: 40%;
+    border-radius: 1px 1px 0 0;
+    transition: opacity 0.3s;
+    position: relative;
+    min-height: 2px;
+  }
+
+  .bar:hover { opacity: 0.8; }
+  .bar-views { background: linear-gradient(180deg, var(--gold-light), var(--gold-dim)); }
+  .bar-likes { background: linear-gradient(180deg, var(--green-bright), var(--green)); }
+
+  .bar-value {
+    position: absolute;
+    top: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  .bar-date {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  .chart-grid-lines {
+    position: absolute;
+    inset: 0;
+    padding-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .grid-line { border-top: 1px dashed var(--border); width: 100%; }
+
+  /* DATA TABLE */
+  .table-section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .data-table thead th {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: right;
+    padding: 0 16px 14px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .data-table thead th:first-child { text-align: left; }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .data-table tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+  .data-table tbody td {
+    padding: 14px 16px;
+    text-align: right;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .data-table tbody td:first-child {
+    text-align: left;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .data-table .highlight { color: var(--gold-light); font-weight: 500; }
+  .data-table .best { color: var(--green-bright); }
+
+  .data-table tfoot td {
+    padding: 14px 16px;
+    text-align: right;
+    border-top: 1px solid var(--border-glow);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .data-table tfoot td:first-child {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ENGAGEMENT RATE BARS */
+  .rate-section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.55s ease both;
+  }
+
+  .rate-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+  }
+
+  .rate-row { display: flex; align-items: center; gap: 16px; }
+
+  .rate-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    width: 110px;
+    flex-shrink: 0;
+  }
+
+  .rate-track { flex: 1; height: 4px; background: var(--border); position: relative; }
+
+  .rate-fill { height: 100%; position: relative; }
+
+  .rate-fill.gold-fill {
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+  }
+
+  .rate-fill.green-fill {
+    background: linear-gradient(90deg, var(--green), var(--green-bright));
+  }
+
+  .rate-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    width: 56px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .rate-value.gold { color: var(--gold-light); }
+  .rate-value.green { color: var(--green-bright); }
+
+  /* INSIGHTS */
+  .insights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: relative;
+  }
+
+  .insight-card.gold-accent { border-top: 2px solid var(--gold); }
+  .insight-card.green-accent { border-top: 2px solid var(--green-bright); }
+
+  .insight-icon { font-size: 20px; margin-bottom: 12px; display: block; }
+
+  .insight-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .insight-body {
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+  }
+
+  .insight-stat {
+    margin-top: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.05em;
+  }
+
+  .insight-stat.gold { color: var(--gold-light); }
+  .insight-stat.green { color: var(--green-bright); }
+
+  /* NEXT STEPS */
+  .next-steps {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    padding: 32px 28px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+
+  .next-steps-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .next-steps-title em { font-style: italic; color: var(--gold-light); }
+
+  .step-item {
+    display: flex;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--gold-dim);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 56px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    animation: fadeUp 0.8s 0.65s ease both;
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  .footer-note {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.8;
+    text-align: right;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .kpi-value { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand-line">
+      <span class="brand-icon">⛳</span>
+      <span class="brand-name">AKA Golf Balls</span>
+      <div class="brand-dot"></div>
+      <span class="brand-sub">Reporte de Analytics</span>
+    </div>
+    <h1 class="report-title">Rendimiento<br><em>TikTok</em></h1>
+    <div class="report-meta">
+      <div class="meta-item">Período <span>14 – 20 de abril, 2026</span></div>
+      <div class="meta-item">Plataforma <span>TikTok</span></div>
+      <div class="meta-item">Generado <span id="genDate"></span></div>
+    </div>
+  </header>
+
+  <!-- PERIOD BAR -->
+  <div class="period-bar">
+    <div>
+      <div class="period-label">Ventana de reporte</div>
+      <div class="period-dates">14 de Abril → 20 de Abril, 2026 · 7 Días</div>
+    </div>
+    <div class="platform-badge">
+      <div class="platform-dot"></div>
+      TikTok · @akagolfballz
+    </div>
+  </div>
+
+  <!-- KPI TOTALS -->
+  <div class="section-header">
+    <div class="section-label">01 / Resumen</div>
+    <h2 class="section-title">Totales <em>Semanales</em></h2>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Vistas de Video</div>
+      <div class="kpi-value gold">426</div>
+      <div class="kpi-sub">Impresiones totales</div>
+      <div class="kpi-accent">7 días</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Vistas de Perfil</div>
+      <div class="kpi-value">37</div>
+      <div class="kpi-sub">Visitas al perfil</div>
+      <div class="kpi-accent">↑ señal de intención</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Likes Totales</div>
+      <div class="kpi-value green">25</div>
+      <div class="kpi-sub">En todos los posts</div>
+      <div class="kpi-accent">↗ tasa 5.87%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Comentarios</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-sub">Respuestas recibidas</div>
+      <div class="kpi-accent">16 de abril</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Compartidos</div>
+      <div class="kpi-value gold">15</div>
+      <div class="kpi-sub">Difusión del contenido</div>
+      <div class="kpi-accent">↑ señal viral</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Día Pico</div>
+      <div class="kpi-value green" style="font-size:28px; padding-top:8px;">14 ABR</div>
+      <div class="kpi-sub">311 vistas · 11 compartidos</div>
+      <div class="kpi-accent">mejor día</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CHART -->
+  <div class="section-header">
+    <div class="section-label">02 / Tendencia</div>
+    <h2 class="section-title">Actividad <em>Diaria</em></h2>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-wrap">
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--gold-light);"></div>
+          Vistas de Video
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background: var(--green-bright);"></div>
+          Likes
+        </div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-grid-lines">
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+        </div>
+        <div class="chart-bars" id="chartBars"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- DATA TABLE -->
+  <div class="section-header">
+    <div class="section-label">03 / Desglose</div>
+    <h2 class="section-title">Datos <em>por Día</em></h2>
+  </div>
+
+  <div class="table-section">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Vistas</th>
+          <th>Vistas Perfil</th>
+          <th>Likes</th>
+          <th>Comentarios</th>
+          <th>Compartidos</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+      <tfoot>
+        <tr>
+          <td>Total 7 Días</td>
+          <td>426</td>
+          <td>37</td>
+          <td>25</td>
+          <td>2</td>
+          <td>15</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ENGAGEMENT RATES -->
+  <div class="section-header">
+    <div class="section-label">04 / Tasas</div>
+    <h2 class="section-title">Métricas de <em>Engagement</em></h2>
+  </div>
+
+  <div class="rate-section">
+    <div class="rate-bars">
+      <div class="rate-row">
+        <div class="rate-label">Tasa de Like</div>
+        <div class="rate-track">
+          <div class="rate-fill gold-fill" style="width: 58.7%"></div>
+        </div>
+        <div class="rate-value gold">5.87%</div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-label">Tasa Compartir</div>
+        <div class="rate-track">
+          <div class="rate-fill gold-fill" style="width: 35.2%"></div>
+        </div>
+        <div class="rate-value gold">3.52%</div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-label">CTR al Perfil</div>
+        <div class="rate-track">
+          <div class="rate-fill green-fill" style="width: 86.9%"></div>
+        </div>
+        <div class="rate-value green">8.69%</div>
+      </div>
+      <div class="rate-row">
+        <div class="rate-label">Tasa Comentario</div>
+        <div class="rate-track">
+          <div class="rate-fill green-fill" style="width: 4.7%"></div>
+        </div>
+        <div class="rate-value green">0.47%</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- INSIGHTS -->
+  <div class="section-header">
+    <div class="section-label">05 / Análisis</div>
+    <h2 class="section-title">Hallazgos <em>Clave</em></h2>
+  </div>
+
+  <div class="insights-grid">
+    <div class="insight-card gold-accent">
+      <span class="insight-icon">🚀</span>
+      <div class="insight-title">Pico del 14 de Abril</div>
+      <div class="insight-body">
+        Un solo video generó el 73% de todas las vistas de la semana en un día — 311 vistas y 11 compartidos. Analizar el hook, el formato y el horario de publicación de ese contenido. Es la plantilla a replicar.
+      </div>
+      <div class="insight-stat gold">73%</div>
+    </div>
+    <div class="insight-card green-accent">
+      <span class="insight-icon">📤</span>
+      <div class="insight-title">Compartidos por Encima del Promedio</div>
+      <div class="insight-body">
+        15 compartidos sobre 426 vistas = 3.52% de tasa. El promedio de la industria es ~1–2%. Los espectadores están distribuyendo tu contenido voluntariamente — una señal viral temprana que vale la pena amplificar.
+      </div>
+      <div class="insight-stat green">3.52%</div>
+    </div>
+    <div class="insight-card gold-accent">
+      <span class="insight-icon">👤</span>
+      <div class="insight-title">Intención de Perfil Alta</div>
+      <div class="insight-body">
+        8.69% de los espectadores visitaron el perfil después de ver el video — muy por encima del promedio. Señal de curiosidad de marca. Un bio pulido + link DTC es esencial para convertir ese tráfico.
+      </div>
+      <div class="insight-stat gold">8.69%</div>
+    </div>
+    <div class="insight-card green-accent">
+      <span class="insight-icon">📉</span>
+      <div class="insight-title">Caída Post-Pico</div>
+      <div class="insight-body">
+        Del 15 al 20 de abril se observa una caída significativa. Se requiere publicación diaria constante (mínimo 1 video/día) para mantener la distribución del algoritmo de TikTok y no perder el impulso ganado.
+      </div>
+      <div class="insight-stat green">↓ 83%</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PRÓXIMOS PASOS -->
+  <div class="section-header">
+    <div class="section-label">06 / Acción</div>
+    <h2 class="section-title">Próximos <em>Pasos</em></h2>
+  </div>
+
+  <div class="next-steps">
+    <div class="step-item">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Replicar el video del 14 de abril</div>
+        <div class="step-desc">Identificar el hook, duración, formato y horario del video pico. Producir 3 versiones similares esta semana y medir cuál mantiene el rendimiento.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Publicación diaria mínima</div>
+        <div class="step-desc">El algoritmo de TikTok premia la consistencia. Objetivo: 1 video por día durante las próximas 2 semanas para recuperar el impulso perdido post-pico.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Optimizar el perfil para conversión DTC</div>
+        <div class="step-desc">Con 8.69% de CTR al perfil, el bio y el link deben convertir. Asegurar que el enlace dirija a la tienda Shopify con una oferta clara visible en los primeros 2 segundos.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">Amplificar contenido compartible</div>
+        <div class="step-desc">3.52% de share rate es una señal fuerte. Crear contenido de comparación (pelotas nuevas vs. AKA), challenges o datos sorprendentes — formatos que naturalmente se comparten.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">AKA Golf Balls</div>
+    <div class="footer-note">
+      Analytics TikTok · 14–20 de Abril, 2026<br>
+      Preparado por tu equipo de marketing
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Fecha de generación
+  const hoy = new Date();
+  document.getElementById('genDate').textContent = hoy.toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'});
+
+  // Datos
+  const data = [
+    { fecha: '14 Abr', views: 311, profile: 15, likes: 11, comments: 0, shares: 11 },
+    { fecha: '15 Abr', views: 41,  profile: 5,  likes: 4,  comments: 0, shares: 4  },
+    { fecha: '16 Abr', views: 30,  profile: 7,  likes: 4,  comments: 2, shares: 0  },
+    { fecha: '17 Abr', views: 10,  profile: 0,  likes: 1,  comments: 0, shares: 0  },
+    { fecha: '18 Abr', views: 11,  profile: 2,  likes: 2,  comments: 0, shares: 0  },
+    { fecha: '19 Abr', views: 5,   profile: 2,  likes: 1,  comments: 0, shares: 0  },
+    { fecha: '20 Abr', views: 18,  profile: 6,  likes: 2,  comments: 0, shares: 0  },
+  ];
+
+  const maxViews = Math.max(...data.map(d => d.views));
+  const maxLikes = Math.max(...data.map(d => d.likes));
+
+  // Chart
+  const chartBars = document.getElementById('chartBars');
+  data.forEach(d => {
+    const viewH = (d.views / maxViews) * 100;
+    const likeH = (d.likes / maxLikes) * 100;
+    const isPeak = d.views === maxViews;
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+    group.innerHTML = `
+      <div class="bars-inner">
+        <div class="bar bar-views" style="height:${viewH}%;">
+          ${isPeak ? `<span class="bar-value">${d.views}</span>` : ''}
+        </div>
+        <div class="bar bar-likes" style="height:${likeH}%;"></div>
+      </div>
+      <span class="bar-date">${d.fecha.replace(' Abr','')}</span>
+    `;
+    chartBars.appendChild(group);
+  });
+
+  // Tabla
+  const tbody = document.getElementById('tableBody');
+  data.forEach(d => {
+    const isPeak = d.views === maxViews;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${d.fecha}${isPeak ? ' ⭐' : ''}</td>
+      <td class="${isPeak ? 'highlight' : ''}">${d.views}</td>
+      <td>${d.profile}</td>
+      <td class="${d.likes >= 4 ? 'best' : ''}">${d.likes}</td>
+      <td>${d.comments}</td>
+      <td class="${d.shares >= 4 ? 'best' : ''}">${d.shares}</td>
+    `;
+    tbody.appendChild(row);
+  });
+</script>
+</body>
+</html>

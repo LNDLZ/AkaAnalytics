@@ -3,960 +3,449 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKA Golf Balls · Reporte de Analytics</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<title>AKA Golf Balls · Dashboard Abril 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #050505;
-    --deep: #0a0a0a;
-    --card: #0f0f0f;
-    --border: #1a1a1a;
-    --border-glow: #2a2a2a;
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-dim: #7a6030;
-    --green: #2d6a4f;
-    --green-light: #52b788;
-    --green-bright: #74c69d;
-    --white: #f5f0e8;
-    --muted: #555;
-    --text-dim: #888;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-  }
-
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 32px 80px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* HEADER */
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 40px;
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s ease both;
-  }
-
-  .brand-line {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .brand-icon { font-size: 20px; opacity: 0.7; }
-
-  .brand-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-
-  .brand-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold-dim); }
-
-  .brand-sub {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .report-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(42px, 6vw, 72px);
-    font-weight: 300;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 16px;
-  }
-
-  .report-title em { font-style: italic; color: var(--gold-light); }
-
-  .report-meta { display: flex; gap: 32px; flex-wrap: wrap; }
-
-  .meta-item {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .meta-item span { color: var(--text-dim); }
-
-  /* PERIOD BAR */
-  .period-bar {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--gold);
-    padding: 16px 24px;
-    margin-bottom: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    animation: fadeUp 0.8s 0.1s ease both;
-  }
-
-  .period-label {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .period-dates {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 0.1em;
-    color: var(--white);
-  }
-
-  .platform-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    border: 1px solid var(--border-glow);
-    padding: 6px 14px;
-  }
-
-  .platform-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green-bright);
-    box-shadow: 0 0 6px var(--green-bright);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* SECTION HEADER */
-  .section-header {
-    margin-bottom: 28px;
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-  }
-
-  .section-label {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-    border-left: 2px solid var(--gold-dim);
-    padding-left: 10px;
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--white);
-    letter-spacing: -0.01em;
-  }
-
-  .section-title em { font-style: italic; color: var(--gold-light); }
-
-  /* KPI GRID */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.2s ease both;
-  }
-
-  .kpi-card {
-    background: var(--card);
-    padding: 28px 24px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-
-  .kpi-card:hover { background: #111; }
-
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .kpi-card:hover::after { opacity: 1; }
-
-  .kpi-label {
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .kpi-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    line-height: 1;
-    color: var(--white);
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-  }
-
-  .kpi-value.gold { color: var(--gold-light); }
-  .kpi-value.green { color: var(--green-bright); }
-
-  .kpi-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
-
-  .kpi-accent {
-    position: absolute;
-    bottom: 16px; right: 16px;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-  }
-
-  /* CHART */
-  .chart-section {
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
-
-  .chart-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 32px 28px 24px;
-  }
-
-  .chart-legend {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-
-  .legend-dot { width: 8px; height: 8px; border-radius: 1px; }
-
-  .chart-container { position: relative; height: 220px; }
-
-  .chart-bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    height: 100%;
-    padding-bottom: 32px;
-  }
-
-  .bar-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    height: 100%;
-    justify-content: flex-end;
-    position: relative;
-  }
-
-  .bars-inner {
-    display: flex;
-    gap: 3px;
-    align-items: flex-end;
-    height: calc(100% - 32px);
-    width: 100%;
-    justify-content: center;
-  }
-
-  .bar {
-    width: 40%;
-    border-radius: 1px 1px 0 0;
-    transition: opacity 0.3s;
-    position: relative;
-    min-height: 2px;
-  }
-
-  .bar:hover { opacity: 0.8; }
-  .bar-views { background: linear-gradient(180deg, var(--gold-light), var(--gold-dim)); }
-  .bar-likes { background: linear-gradient(180deg, var(--green-bright), var(--green)); }
-
-  .bar-value {
-    position: absolute;
-    top: -18px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 8px;
-    color: var(--muted);
-    white-space: nowrap;
-    letter-spacing: 0.05em;
-  }
-
-  .bar-date {
-    position: absolute;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    font-size: 8px;
-    color: var(--muted);
-    white-space: nowrap;
-    letter-spacing: 0.05em;
-    text-align: center;
-  }
-
-  .chart-grid-lines {
-    position: absolute;
-    inset: 0;
-    padding-bottom: 32px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    pointer-events: none;
-  }
-
-  .grid-line { border-top: 1px dashed var(--border); width: 100%; }
-
-  /* DATA TABLE */
-  .table-section {
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.4s ease both;
-  }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-  }
-
-  .data-table thead th {
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    color: var(--gold-dim);
-    text-transform: uppercase;
-    text-align: right;
-    padding: 0 16px 14px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 400;
-  }
-
-  .data-table thead th:first-child { text-align: left; }
-
-  .data-table tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.2s;
-  }
-
-  .data-table tbody tr:hover { background: rgba(201,168,76,0.04); }
-
-  .data-table tbody td {
-    padding: 14px 16px;
-    text-align: right;
-    color: var(--text-dim);
-    font-family: 'DM Mono', monospace;
-  }
-
-  .data-table tbody td:first-child {
-    text-align: left;
-    color: var(--white);
-    font-weight: 500;
-  }
-
-  .data-table .highlight { color: var(--gold-light); font-weight: 500; }
-  .data-table .best { color: var(--green-bright); }
-
-  .data-table tfoot td {
-    padding: 14px 16px;
-    text-align: right;
-    border-top: 1px solid var(--border-glow);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--white);
-    font-weight: 500;
-  }
-
-  .data-table tfoot td:first-child {
-    text-align: left;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  /* ENGAGEMENT RATE BARS */
-  .rate-section {
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.55s ease both;
-  }
-
-  .rate-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 28px 24px;
-  }
-
-  .rate-row { display: flex; align-items: center; gap: 16px; }
-
-  .rate-label {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-    width: 110px;
-    flex-shrink: 0;
-  }
-
-  .rate-track { flex: 1; height: 4px; background: var(--border); position: relative; }
-
-  .rate-fill { height: 100%; position: relative; }
-
-  .rate-fill.gold-fill {
-    background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
-  }
-
-  .rate-fill.green-fill {
-    background: linear-gradient(90deg, var(--green), var(--green-bright));
-  }
-
-  .rate-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    letter-spacing: 0.05em;
-    width: 56px;
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .rate-value.gold { color: var(--gold-light); }
-  .rate-value.green { color: var(--green-bright); }
-
-  /* INSIGHTS */
-  .insights-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.5s ease both;
-  }
-
-  .insight-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 24px;
-    position: relative;
-  }
-
-  .insight-card.gold-accent { border-top: 2px solid var(--gold); }
-  .insight-card.green-accent { border-top: 2px solid var(--green-bright); }
-
-  .insight-icon { font-size: 20px; margin-bottom: 12px; display: block; }
-
-  .insight-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--white);
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-
-  .insight-body {
-    font-size: 10px;
-    line-height: 1.7;
-    color: var(--text-dim);
-    letter-spacing: 0.03em;
-  }
-
-  .insight-stat {
-    margin-top: 14px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.05em;
-  }
-
-  .insight-stat.gold { color: var(--gold-light); }
-  .insight-stat.green { color: var(--green-bright); }
-
-  /* NEXT STEPS */
-  .next-steps {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--gold);
-    padding: 32px 28px;
-    margin-bottom: 56px;
-    animation: fadeUp 0.8s 0.6s ease both;
-  }
-
-  .next-steps-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--white);
-    margin-bottom: 24px;
-  }
-
-  .next-steps-title em { font-style: italic; color: var(--gold-light); }
-
-  .step-item {
-    display: flex;
-    gap: 20px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .step-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-  .step-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    color: var(--gold-dim);
-    letter-spacing: 0.1em;
-    line-height: 1;
-    flex-shrink: 0;
-    width: 28px;
-  }
-
-  .step-content { flex: 1; }
-
-  .step-title {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--white);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-
-  .step-desc {
-    font-size: 10px;
-    line-height: 1.6;
-    color: var(--text-dim);
-    letter-spacing: 0.02em;
-  }
-
-  /* DIVIDER */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 56px 0;
-  }
-
-  /* FOOTER */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding-top: 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    animation: fadeUp 0.8s 0.65s ease both;
-  }
-
-  .footer-brand {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-  }
-
-  .footer-note {
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    line-height: 1.8;
-    text-align: right;
-  }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 600px) {
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .insights-grid { grid-template-columns: 1fr; }
-    .kpi-value { font-size: 36px; }
-  }
+:root {
+  --black:      #060606;
+  --card:       #0d0d0d;
+  --border:     #1c1c1c;
+  --gold:       #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dim:   #5a4520;
+  --blue:       #6ba3d6;
+  --blue-dim:   #2a4a70;
+  --green:      #74c69d;
+  --purple:     #c4a0e0;
+  --white:      #f0ebe0;
+  --muted:      #444;
+  --dim:        #666;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  min-height: 100vh;
+}
+.hdr {
+  padding: 32px 36px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.brand { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:.4em; color:var(--gold); margin-bottom:6px; }
+.ttl   { font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:300; line-height:1; letter-spacing:-.02em; }
+.ttl em { font-style:italic; color:var(--gold-light); }
+.hdr-r { text-align:right; }
+.period  { font-size:9px; letter-spacing:.15em; color:var(--dim); text-transform:uppercase; margin-bottom:3px; }
+.gendate { font-size:9px; color:var(--muted); letter-spacing:.08em; }
+
+.tabs { display:flex; gap:1px; background:var(--border); }
+.tab {
+  flex:1; padding:13px 0;
+  background:var(--card); border:none; cursor:pointer;
+  font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:.25em;
+  color:var(--muted); transition:all .2s; border-top:2px solid transparent;
+}
+.tab:hover { background:#111; color:var(--dim); }
+.tab.act-tt { color:var(--gold-light); background:#0c0900; border-top-color:var(--gold); }
+.tab.act-fb { color:var(--blue);       background:#00080f; border-top-color:var(--blue); }
+
+.panel { display:none; padding:28px 36px 52px; }
+.panel.on { display:block; animation:up .35s ease both; }
+@keyframes up { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* circles */
+.circles { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:36px; }
+.ccard   { display:flex; flex-direction:column; align-items:center; gap:10px; }
+.ring-svg { width:110px; height:110px; }
+.ring-bg  { fill:none; stroke:var(--border); stroke-width:8; }
+.ring-fill {
+  fill:none; stroke-width:8; stroke-linecap:round;
+  transform-origin:55px 55px; transform:rotate(-90deg);
+  transition:stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1);
+}
+.rlbl { font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim); text-align:center; }
+
+/* sparkline */
+.spark-box { background:var(--card); border:1px solid var(--border); padding:20px 20px 14px; margin-bottom:24px; }
+.box-title { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+.spark-svg { width:100%; display:block; overflow:visible; }
+
+/* tooltip */
+.tip {
+  position:fixed; background:#0f0f0f; border:1px solid var(--border);
+  padding:9px 13px; font-size:9px; letter-spacing:.06em;
+  pointer-events:none; opacity:0; transition:opacity .12s; z-index:999;
+  line-height:1.9; white-space:nowrap;
+}
+.tip.on { opacity:1; }
+.tip-date { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:.1em; margin-bottom:3px; }
+
+/* top days */
+.top-box { background:var(--card); border:1px solid var(--border); padding:20px; }
+.top-row {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 4px; border-bottom:1px solid var(--border);
+  transition:background .15s;
+}
+.top-row:last-child { border-bottom:none; }
+.top-row:hover { background:rgba(255,255,255,.02); }
+.top-rank { font-family:'Bebas Neue',sans-serif; font-size:17px; width:20px; flex-shrink:0; }
+.top-date { font-size:9px; color:var(--white); width:58px; flex-shrink:0; letter-spacing:.04em; }
+.top-track { flex:1; height:4px; background:var(--border); }
+.top-bar   { height:100%; border-radius:1px; }
+.top-stats { display:flex; gap:14px; flex-shrink:0; }
+.ts-val { font-family:'Bebas Neue',sans-serif; font-size:15px; line-height:1; text-align:right; }
+.ts-lbl { font-size:7px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; }
+
+/* facebook */
+.fb-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); margin-bottom:24px; }
+.fb-k { background:var(--card); padding:18px 14px; }
+.fb-k-lbl { font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; line-height:1.4; }
+.fb-k-val { font-family:'Bebas Neue',sans-serif; font-size:30px; line-height:1; color:var(--blue); margin-bottom:4px; }
+.fb-k-val.sm { font-size:18px; padding-top:5px; }
+.fb-k-note { font-size:8px; color:var(--green); letter-spacing:.05em; }
+
+.fb-row2 { display:flex; gap:20px; flex-wrap:wrap; }
+
+.fb-donut-wrap {
+  background:var(--card); border:1px solid var(--border); padding:22px;
+  flex:1; min-width:220px; display:flex; flex-direction:column; align-items:center; gap:16px;
+}
+.donut-c-val { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--blue); line-height:1; }
+.donut-c-lbl { font-size:8px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+.leg-row { display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px solid var(--border); width:100%; font-size:9px; }
+.leg-row:last-child { border-bottom:none; }
+.leg-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.leg-name { flex:1; color:var(--dim); letter-spacing:.06em; }
+.leg-val  { font-family:'Bebas Neue',sans-serif; font-size:13px; color:var(--white); }
+
+.fb-bars-wrap { background:var(--card); border:1px solid var(--border); padding:22px; flex:1; min-width:220px; }
+.fb-br { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.fb-br:last-child { margin-bottom:0; }
+.fb-br-lbl { font-size:8px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); width:80px; flex-shrink:0; }
+.fb-br-trk { flex:1; height:4px; background:var(--border); }
+.fb-br-fil { height:100%; background:linear-gradient(90deg,var(--blue-dim),var(--blue)); transition:width 1s ease; }
+.fb-br-num { font-family:'Bebas Neue',sans-serif; font-size:13px; color:var(--blue); width:36px; text-align:right; flex-shrink:0; }
+.subsect   { font-size:8px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin:16px 0 10px; }
+
+.ftr { border-top:1px solid var(--border); padding:18px 36px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.ftr-brand { font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:.35em; color:var(--gold); }
+.ftr-note  { font-size:8px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; text-align:right; line-height:1.8; }
+
+@media(max-width:580px){
+  .fb-kpis{grid-template-columns:repeat(2,1fr)}
+  .circles{gap:14px}
+  .ring-svg{width:90px;height:90px}
+  .hdr,.panel,.ftr{padding-left:18px;padding-right:18px}
+}
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="brand-line">
-      <span class="brand-icon">⛳</span>
-      <span class="brand-name">AKA Golf Balls</span>
-      <div class="brand-dot"></div>
-      <span class="brand-sub">Reporte de Analytics</span>
-    </div>
-    <h1 class="report-title">Rendimiento<br><em>TikTok</em></h1>
-    <div class="report-meta">
-      <div class="meta-item">Período <span>14 – 20 de abril, 2026</span></div>
-      <div class="meta-item">Plataforma <span>TikTok</span></div>
-      <div class="meta-item">Generado <span id="genDate"></span></div>
-    </div>
-  </header>
-
-  <!-- PERIOD BAR -->
-  <div class="period-bar">
-    <div>
-      <div class="period-label">Ventana de reporte</div>
-      <div class="period-dates">14 de Abril → 20 de Abril, 2026 · 7 Días</div>
-    </div>
-    <div class="platform-badge">
-      <div class="platform-dot"></div>
-      TikTok · @akagolfballz
-    </div>
+<div class="hdr">
+  <div>
+    <div class="brand">&#9971; AKA Golf Balls</div>
+    <h1 class="ttl">Dashboard <em>Abril</em></h1>
   </div>
-
-  <!-- KPI TOTALS -->
-  <div class="section-header">
-    <div class="section-label">01 / Resumen</div>
-    <h2 class="section-title">Totales <em>Semanales</em></h2>
+  <div class="hdr-r">
+    <div class="period">Abril 2026 &middot; Reporte Mensual</div>
+    <div class="gendate" id="gd"></div>
   </div>
-
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-label">Vistas de Video</div>
-      <div class="kpi-value gold">426</div>
-      <div class="kpi-sub">Impresiones totales</div>
-      <div class="kpi-accent">7 días</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Vistas de Perfil</div>
-      <div class="kpi-value">37</div>
-      <div class="kpi-sub">Visitas al perfil</div>
-      <div class="kpi-accent">↑ señal de intención</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Likes Totales</div>
-      <div class="kpi-value green">25</div>
-      <div class="kpi-sub">En todos los posts</div>
-      <div class="kpi-accent">↗ tasa 5.87%</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Comentarios</div>
-      <div class="kpi-value">2</div>
-      <div class="kpi-sub">Respuestas recibidas</div>
-      <div class="kpi-accent">16 de abril</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Compartidos</div>
-      <div class="kpi-value gold">15</div>
-      <div class="kpi-sub">Difusión del contenido</div>
-      <div class="kpi-accent">↑ señal viral</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Día Pico</div>
-      <div class="kpi-value green" style="font-size:28px; padding-top:8px;">14 ABR</div>
-      <div class="kpi-sub">311 vistas · 11 compartidos</div>
-      <div class="kpi-accent">mejor día</div>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- CHART -->
-  <div class="section-header">
-    <div class="section-label">02 / Tendencia</div>
-    <h2 class="section-title">Actividad <em>Diaria</em></h2>
-  </div>
-
-  <div class="chart-section">
-    <div class="chart-wrap">
-      <div class="chart-legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background: var(--gold-light);"></div>
-          Vistas de Video
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background: var(--green-bright);"></div>
-          Likes
-        </div>
-      </div>
-      <div class="chart-container">
-        <div class="chart-grid-lines">
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
-          <div class="grid-line"></div>
-        </div>
-        <div class="chart-bars" id="chartBars"></div>
-      </div>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- DATA TABLE -->
-  <div class="section-header">
-    <div class="section-label">03 / Desglose</div>
-    <h2 class="section-title">Datos <em>por Día</em></h2>
-  </div>
-
-  <div class="table-section">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Vistas</th>
-          <th>Vistas Perfil</th>
-          <th>Likes</th>
-          <th>Comentarios</th>
-          <th>Compartidos</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-      <tfoot>
-        <tr>
-          <td>Total 7 Días</td>
-          <td>426</td>
-          <td>37</td>
-          <td>25</td>
-          <td>2</td>
-          <td>15</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <hr class="divider">
-
-  <!-- ENGAGEMENT RATES -->
-  <div class="section-header">
-    <div class="section-label">04 / Tasas</div>
-    <h2 class="section-title">Métricas de <em>Engagement</em></h2>
-  </div>
-
-  <div class="rate-section">
-    <div class="rate-bars">
-      <div class="rate-row">
-        <div class="rate-label">Tasa de Like</div>
-        <div class="rate-track">
-          <div class="rate-fill gold-fill" style="width: 58.7%"></div>
-        </div>
-        <div class="rate-value gold">5.87%</div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-label">Tasa Compartir</div>
-        <div class="rate-track">
-          <div class="rate-fill gold-fill" style="width: 35.2%"></div>
-        </div>
-        <div class="rate-value gold">3.52%</div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-label">CTR al Perfil</div>
-        <div class="rate-track">
-          <div class="rate-fill green-fill" style="width: 86.9%"></div>
-        </div>
-        <div class="rate-value green">8.69%</div>
-      </div>
-      <div class="rate-row">
-        <div class="rate-label">Tasa Comentario</div>
-        <div class="rate-track">
-          <div class="rate-fill green-fill" style="width: 4.7%"></div>
-        </div>
-        <div class="rate-value green">0.47%</div>
-      </div>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- INSIGHTS -->
-  <div class="section-header">
-    <div class="section-label">05 / Análisis</div>
-    <h2 class="section-title">Hallazgos <em>Clave</em></h2>
-  </div>
-
-  <div class="insights-grid">
-    <div class="insight-card gold-accent">
-      <span class="insight-icon">🚀</span>
-      <div class="insight-title">Pico del 14 de Abril</div>
-      <div class="insight-body">
-        Un solo video generó el 73% de todas las vistas de la semana en un día — 311 vistas y 11 compartidos. Analizar el hook, el formato y el horario de publicación de ese contenido. Es la plantilla a replicar.
-      </div>
-      <div class="insight-stat gold">73%</div>
-    </div>
-    <div class="insight-card green-accent">
-      <span class="insight-icon">📤</span>
-      <div class="insight-title">Compartidos por Encima del Promedio</div>
-      <div class="insight-body">
-        15 compartidos sobre 426 vistas = 3.52% de tasa. El promedio de la industria es ~1–2%. Los espectadores están distribuyendo tu contenido voluntariamente — una señal viral temprana que vale la pena amplificar.
-      </div>
-      <div class="insight-stat green">3.52%</div>
-    </div>
-    <div class="insight-card gold-accent">
-      <span class="insight-icon">👤</span>
-      <div class="insight-title">Intención de Perfil Alta</div>
-      <div class="insight-body">
-        8.69% de los espectadores visitaron el perfil después de ver el video — muy por encima del promedio. Señal de curiosidad de marca. Un bio pulido + link DTC es esencial para convertir ese tráfico.
-      </div>
-      <div class="insight-stat gold">8.69%</div>
-    </div>
-    <div class="insight-card green-accent">
-      <span class="insight-icon">📉</span>
-      <div class="insight-title">Caída Post-Pico</div>
-      <div class="insight-body">
-        Del 15 al 20 de abril se observa una caída significativa. Se requiere publicación diaria constante (mínimo 1 video/día) para mantener la distribución del algoritmo de TikTok y no perder el impulso ganado.
-      </div>
-      <div class="insight-stat green">↓ 83%</div>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <!-- PRÓXIMOS PASOS -->
-  <div class="section-header">
-    <div class="section-label">06 / Acción</div>
-    <h2 class="section-title">Próximos <em>Pasos</em></h2>
-  </div>
-
-  <div class="next-steps">
-    <div class="step-item">
-      <div class="step-num">01</div>
-      <div class="step-content">
-        <div class="step-title">Replicar el video del 14 de abril</div>
-        <div class="step-desc">Identificar el hook, duración, formato y horario del video pico. Producir 3 versiones similares esta semana y medir cuál mantiene el rendimiento.</div>
-      </div>
-    </div>
-    <div class="step-item">
-      <div class="step-num">02</div>
-      <div class="step-content">
-        <div class="step-title">Publicación diaria mínima</div>
-        <div class="step-desc">El algoritmo de TikTok premia la consistencia. Objetivo: 1 video por día durante las próximas 2 semanas para recuperar el impulso perdido post-pico.</div>
-      </div>
-    </div>
-    <div class="step-item">
-      <div class="step-num">03</div>
-      <div class="step-content">
-        <div class="step-title">Optimizar el perfil para conversión DTC</div>
-        <div class="step-desc">Con 8.69% de CTR al perfil, el bio y el link deben convertir. Asegurar que el enlace dirija a la tienda Shopify con una oferta clara visible en los primeros 2 segundos.</div>
-      </div>
-    </div>
-    <div class="step-item">
-      <div class="step-num">04</div>
-      <div class="step-content">
-        <div class="step-title">Amplificar contenido compartible</div>
-        <div class="step-desc">3.52% de share rate es una señal fuerte. Crear contenido de comparación (pelotas nuevas vs. AKA), challenges o datos sorprendentes — formatos que naturalmente se comparten.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-brand">AKA Golf Balls</div>
-    <div class="footer-note">
-      Analytics TikTok · 14–20 de Abril, 2026<br>
-      Preparado por tu equipo de marketing
-    </div>
-  </footer>
-
 </div>
 
-<script>
-  // Fecha de generación
-  const hoy = new Date();
-  document.getElementById('genDate').textContent = hoy.toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'});
+<div class="tabs">
+  <button class="tab act-tt" id="tab-tt" onclick="show('tt')">&#128241; &nbsp;TikTok</button>
+  <button class="tab"        id="tab-fb" onclick="show('fb')">&#128216; &nbsp;Facebook</button>
+</div>
 
-  // Datos
-  const data = [
-    { fecha: '14 Abr', views: 311, profile: 15, likes: 11, comments: 0, shares: 11 },
-    { fecha: '15 Abr', views: 41,  profile: 5,  likes: 4,  comments: 0, shares: 4  },
-    { fecha: '16 Abr', views: 30,  profile: 7,  likes: 4,  comments: 2, shares: 0  },
-    { fecha: '17 Abr', views: 10,  profile: 0,  likes: 1,  comments: 0, shares: 0  },
-    { fecha: '18 Abr', views: 11,  profile: 2,  likes: 2,  comments: 0, shares: 0  },
-    { fecha: '19 Abr', views: 5,   profile: 2,  likes: 1,  comments: 0, shares: 0  },
-    { fecha: '20 Abr', views: 18,  profile: 6,  likes: 2,  comments: 0, shares: 0  },
+<!-- TikTok -->
+<div class="panel on" id="panel-tt">
+  <div class="circles" id="circles"></div>
+  <div class="spark-box">
+    <div class="box-title">Vistas por d&iacute;a &mdash; d&iacute;as con actividad</div>
+    <svg class="spark-svg" id="spark" viewBox="0 0 700 90" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#c9a84c" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <div class="top-box">
+    <div class="box-title" style="margin-bottom:14px">Top d&iacute;as por vistas</div>
+    <div id="top"></div>
+  </div>
+</div>
+
+<!-- Facebook -->
+<div class="panel" id="panel-fb">
+  <div class="fb-kpis">
+    <div class="fb-k">
+      <div class="fb-k-lbl">Visualizaciones</div>
+      <div class="fb-k-val">1.521</div>
+      <div class="fb-k-note">&#8593; 3.100% vs anterior</div>
+    </div>
+    <div class="fb-k">
+      <div class="fb-k-lbl">Reprod. 3 seg.</div>
+      <div class="fb-k-val">298</div>
+      <div class="fb-k-note">&#8593; 5.900% vs anterior</div>
+    </div>
+    <div class="fb-k">
+      <div class="fb-k-lbl">Interacciones</div>
+      <div class="fb-k-val">4</div>
+      <div class="fb-k-note">&#8593; 100% vs anterior</div>
+    </div>
+    <div class="fb-k">
+      <div class="fb-k-lbl">Tiempo reproducci&oacute;n</div>
+      <div class="fb-k-val sm">1h 43min</div>
+      <div class="fb-k-note">&#8593; 17.800% vs anterior</div>
+    </div>
+  </div>
+  <div class="fb-row2">
+    <div class="fb-donut-wrap">
+      <div class="box-title" style="align-self:flex-start">Origen de visualizaciones</div>
+      <div style="position:relative;width:140px;height:140px">
+        <svg viewBox="0 0 140 140" style="width:140px;height:140px">
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#1a1a1a" stroke-width="16"/>
+          <circle cx="70" cy="70" r="52" fill="none"
+            stroke="#6ba3d6" stroke-width="16" stroke-linecap="round"
+            stroke-dasharray="326.7" stroke-dashoffset="326.7" id="dOrg"
+            style="transform:rotate(-90deg);transform-origin:70px 70px;transition:stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div class="donut-c-val">1.521</div>
+          <div class="donut-c-lbl">total</div>
+        </div>
+      </div>
+      <div style="width:100%">
+        <div class="leg-row"><div class="leg-dot" style="background:var(--blue)"></div><div class="leg-name">Org&aacute;nico</div><div class="leg-val">1.521</div></div>
+        <div class="leg-row"><div class="leg-dot" style="background:var(--border)"></div><div class="leg-name">Anuncios</div><div class="leg-val" style="color:var(--muted)">0</div></div>
+        <div class="leg-row"><div class="leg-dot" style="background:#4a90c0"></div><div class="leg-name">Espectadores &uacute;nicos</div><div class="leg-val">972</div></div>
+      </div>
+    </div>
+    <div class="fb-bars-wrap">
+      <div class="box-title">Visualizaciones por formato</div>
+      <div class="fb-br"><div class="fb-br-lbl">Reels</div><div class="fb-br-trk"><div class="fb-br-fil" id="bR" style="width:0%"></div></div><div class="fb-br-num">1.211</div></div>
+      <div class="fb-br"><div class="fb-br-lbl">Foto</div><div class="fb-br-trk"><div class="fb-br-fil" id="bF" style="width:0%"></div></div><div class="fb-br-num">134</div></div>
+      <div class="fb-br"><div class="fb-br-lbl">Varias fotos</div><div class="fb-br-trk"><div class="fb-br-fil" id="bM" style="width:0%"></div></div><div class="fb-br-num">127</div></div>
+      <div class="fb-br"><div class="fb-br-lbl">Enlaces</div><div class="fb-br-trk"><div class="fb-br-fil" id="bL" style="width:0%"></div></div><div class="fb-br-num">28</div></div>
+      <div class="fb-br"><div class="fb-br-lbl">Otros</div><div class="fb-br-trk"><div class="fb-br-fil" id="bO" style="width:0%"></div></div><div class="fb-br-num">21</div></div>
+      <div class="subsect">Interacciones por formato</div>
+      <div class="fb-br"><div class="fb-br-lbl">Varias fotos</div><div class="fb-br-trk"><div class="fb-br-fil" id="bIM" style="width:0%"></div></div><div class="fb-br-num">2</div></div>
+      <div class="fb-br"><div class="fb-br-lbl">Reels</div><div class="fb-br-trk"><div class="fb-br-fil" id="bIR" style="width:0%"></div></div><div class="fb-br-num">2</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tip" id="tip"><div class="tip-date" id="tip-d"></div><div id="tip-b"></div></div>
+
+<footer class="ftr">
+  <div class="ftr-brand">AKA Golf Balls</div>
+  <div class="ftr-note">TikTok 13 abr &ndash; 2 may &middot; Facebook 1 abr &ndash; 3 may 2026<br>Preparado por tu equipo de marketing</div>
+</footer>
+
+<script>
+(function(){
+  var NS = 'http://www.w3.org/2000/svg';
+
+  document.getElementById('gd').textContent =
+    new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+
+  var D = [
+    {f:'13 Abr',v:83, p:4, l:6, c:0,s:5 },
+    {f:'14 Abr',v:311,p:15,l:11,c:0,s:11},
+    {f:'15 Abr',v:41, p:5, l:4, c:0,s:4 },
+    {f:'16 Abr',v:30, p:7, l:4, c:2,s:0 },
+    {f:'17 Abr',v:10, p:0, l:1, c:0,s:0 },
+    {f:'18 Abr',v:11, p:2, l:2, c:0,s:0 },
+    {f:'19 Abr',v:5,  p:2, l:1, c:0,s:0 },
+    {f:'20 Abr',v:18, p:6, l:2, c:0,s:0 },
+    {f:'21 Abr',v:8,  p:4, l:0, c:0,s:0 },
+    {f:'22 Abr',v:34, p:3, l:2, c:0,s:5 },
+    {f:'23 Abr',v:28, p:12,l:3, c:0,s:5 },
+    {f:'24 Abr',v:17, p:9, l:1, c:0,s:0 },
+    {f:'25 Abr',v:79, p:2, l:2, c:0,s:15},
+    {f:'26 Abr',v:2,  p:4, l:0, c:0,s:0 },
+    {f:'27 Abr',v:3,  p:1, l:1, c:0,s:0 },
+    {f:'28 Abr',v:179,p:6, l:4, c:0,s:11},
+    {f:'29 Abr',v:1,  p:5, l:0, c:0,s:0 },
+    {f:'30 Abr',v:494,p:14,l:5, c:0,s:11},
+    {f:'1 May', v:455,p:6, l:4, c:0,s:25},
+    {f:'2 May', v:62, p:2, l:0, c:0,s:0 }
   ];
 
-  const maxViews = Math.max(...data.map(d => d.views));
-  const maxLikes = Math.max(...data.map(d => d.likes));
+  var totV=0,totP=0,totL=0,totC=0,totS=0;
+  for(var i=0;i<D.length;i++){totV+=D[i].v;totP+=D[i].p;totL+=D[i].l;totC+=D[i].c;totS+=D[i].s;}
+  var maxV=0; for(var i=0;i<D.length;i++){if(D[i].v>maxV)maxV=D[i].v;}
 
-  // Chart
-  const chartBars = document.getElementById('chartBars');
-  data.forEach(d => {
-    const viewH = (d.views / maxViews) * 100;
-    const likeH = (d.likes / maxLikes) * 100;
-    const isPeak = d.views === maxViews;
-    const group = document.createElement('div');
-    group.className = 'bar-group';
-    group.innerHTML = `
-      <div class="bars-inner">
-        <div class="bar bar-views" style="height:${viewH}%;">
-          ${isPeak ? `<span class="bar-value">${d.views}</span>` : ''}
-        </div>
-        <div class="bar bar-likes" style="height:${likeH}%;"></div>
-      </div>
-      <span class="bar-date">${d.fecha.replace(' Abr','')}</span>
-    `;
-    chartBars.appendChild(group);
-  });
+  // RINGS
+  var metrics=[
+    {lbl:'Vistas',       val:totV,color:'#e8c97a',pct:1},
+    {lbl:'Vistas Perfil',val:totP,color:'#a0c8f0',pct:totP/totV},
+    {lbl:'Likes',        val:totL,color:'#74c69d',pct:totL/totV},
+    {lbl:'Compartidos',  val:totS,color:'#c4a0e0',pct:totS/totV},
+    {lbl:'Comentarios',  val:totC,color:'#e0a070',pct:totC/totV}
+  ];
+  var circ=2*Math.PI*46;
+  var cel=document.getElementById('circles');
+  for(var i=0;i<metrics.length;i++){
+    (function(m,idx){
+      var off=(circ*(1-m.pct)).toFixed(1);
+      var d=document.createElement('div');
+      d.className='ccard';
+      var svgEl=document.createElementNS(NS,'svg');
+      svgEl.setAttribute('class','ring-svg');
+      svgEl.setAttribute('viewBox','0 0 110 110');
+      var bg=document.createElementNS(NS,'circle');
+      bg.setAttribute('class','ring-bg');bg.setAttribute('cx','55');bg.setAttribute('cy','55');bg.setAttribute('r','46');
+      svgEl.appendChild(bg);
+      var fg=document.createElementNS(NS,'circle');
+      fg.setAttribute('class','ring-fill');fg.setAttribute('cx','55');fg.setAttribute('cy','55');fg.setAttribute('r','46');
+      fg.setAttribute('stroke',m.color);
+      fg.setAttribute('stroke-dasharray',circ.toFixed(1));
+      fg.setAttribute('stroke-dashoffset',circ.toFixed(1));
+      fg.setAttribute('id','rg'+idx);
+      fg.setAttribute('data-to',off);
+      svgEl.appendChild(fg);
+      var txt=document.createElementNS(NS,'text');
+      txt.setAttribute('x','55');txt.setAttribute('y','55');
+      txt.setAttribute('text-anchor','middle');txt.setAttribute('dominant-baseline','middle');
+      txt.setAttribute('font-family','Bebas Neue,sans-serif');txt.setAttribute('font-size','20');
+      txt.setAttribute('fill',m.color);
+      txt.textContent=m.val.toLocaleString('es-CO');
+      svgEl.appendChild(txt);
+      d.appendChild(svgEl);
+      var lbl=document.createElement('div');lbl.className='rlbl';lbl.textContent=m.lbl;
+      d.appendChild(lbl);
+      cel.appendChild(d);
+    })(metrics[i],i);
+  }
+  setTimeout(function(){
+    for(var i=0;i<metrics.length;i++){
+      var r=document.getElementById('rg'+i);
+      if(r)r.style.strokeDashoffset=r.getAttribute('data-to');
+    }
+  },200);
 
-  // Tabla
-  const tbody = document.getElementById('tableBody');
-  data.forEach(d => {
-    const isPeak = d.views === maxViews;
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${d.fecha}${isPeak ? ' ⭐' : ''}</td>
-      <td class="${isPeak ? 'highlight' : ''}">${d.views}</td>
-      <td>${d.profile}</td>
-      <td class="${d.likes >= 4 ? 'best' : ''}">${d.likes}</td>
-      <td>${d.comments}</td>
-      <td class="${d.shares >= 4 ? 'best' : ''}">${d.shares}</td>
-    `;
-    tbody.appendChild(row);
-  });
+  // SVG SPARKLINE
+  var W=700,H=90,pL=10,pR=10,pT=18,pB=6;
+  var n=D.length;
+  var step=(W-pL-pR)/(n-1);
+  function xA(i){return pL+i*step;}
+  function yA(v){return pT+(1-v/maxV)*(H-pT-pB);}
+
+  var sorted=D.slice().sort(function(a,b){return b.v-a.v;});
+  var topSet={};for(var i=0;i<4;i++)topSet[sorted[i].f]=true;
+
+  var apts='M'+xA(0)+','+yA(D[0].v);
+  for(var i=1;i<n;i++)apts+=' L'+xA(i)+','+yA(D[i].v);
+  apts+=' L'+xA(n-1)+','+(H-pB)+' L'+xA(0)+','+(H-pB)+' Z';
+
+  var lpts='M'+xA(0)+','+yA(D[0].v);
+  for(var i=1;i<n;i++)lpts+=' L'+xA(i)+','+yA(D[i].v);
+
+  var svg=document.getElementById('spark');
+
+  var ap=document.createElementNS(NS,'path');
+  ap.setAttribute('d',apts);ap.setAttribute('fill','url(#sg)');svg.appendChild(ap);
+
+  var lp=document.createElementNS(NS,'path');
+  lp.setAttribute('d',lpts);lp.setAttribute('fill','none');
+  lp.setAttribute('stroke','#c9a84c');lp.setAttribute('stroke-width','1.5');svg.appendChild(lp);
+
+  for(var i=0;i<D.length;i++){
+    (function(d,i){
+      var x=xA(i),y=yA(d.v),isPeak=topSet[d.f];
+      var c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',isPeak?4:2.5);
+      c.setAttribute('fill',isPeak?'#e8c97a':'#5a4520');svg.appendChild(c);
+      if(isPeak){
+        var t=document.createElementNS(NS,'text');
+        t.setAttribute('x',x);t.setAttribute('y',y-9);t.setAttribute('text-anchor','middle');
+        t.setAttribute('font-family','DM Mono,monospace');t.setAttribute('font-size','7');
+        t.setAttribute('fill','#e8c97a');t.textContent=d.f;svg.appendChild(t);
+      }
+      var hit=document.createElementNS(NS,'rect');
+      hit.setAttribute('x',x-step/2);hit.setAttribute('y',0);
+      hit.setAttribute('width',step);hit.setAttribute('height',H);
+      hit.setAttribute('fill','transparent');hit.style.cursor='crosshair';
+      hit.addEventListener('mouseenter',function(e){showTip(e,d.f,
+        'Vistas: <b style="color:#e8c97a">'+d.v+'</b>  '+
+        'Likes: <b style="color:#74c69d">'+d.l+'</b>  '+
+        'Compartidos: <b style="color:#c4a0e0">'+d.s+'</b>');});
+      hit.addEventListener('mousemove',moveTip);
+      hit.addEventListener('mouseleave',hideTip);
+      svg.appendChild(hit);
+    })(D[i],i);
+  }
+
+  // TOP DAYS
+  var tops=D.slice().sort(function(a,b){return b.v-a.v;}).slice(0,6);
+  var cls=['#e8c97a','#c9a84c','#c9a84c','#6a5228','#6a5228','#6a5228'];
+  var tel=document.getElementById('top');
+  for(var i=0;i<tops.length;i++){
+    (function(d,i){
+      var pct=(d.v/maxV*100).toFixed(0);
+      var row=document.createElement('div');row.className='top-row';
+      row.innerHTML=
+        '<div class="top-rank" style="color:'+cls[i]+'">'+(i+1)+'</div>'+
+        '<div class="top-date">'+d.f+'</div>'+
+        '<div class="top-track"><div class="top-bar" style="width:'+pct+'%;background:'+cls[i]+'"></div></div>'+
+        '<div class="top-stats">'+
+          '<div><div class="ts-val" style="color:'+cls[i]+'">'+d.v+'</div><div class="ts-lbl">vistas</div></div>'+
+          '<div><div class="ts-val" style="color:#74c69d">'+d.l+'</div><div class="ts-lbl">likes</div></div>'+
+          '<div><div class="ts-val" style="color:#c4a0e0">'+d.s+'</div><div class="ts-lbl">comp.</div></div>'+
+        '</div>';
+      row.addEventListener('mouseenter',function(e){showTip(e,d.f,
+        'Vistas: <b style="color:#e8c97a">'+d.v+'</b><br>'+
+        'Perfil: <b>'+d.p+'</b>  Likes: <b style="color:#74c69d">'+d.l+'</b><br>'+
+        'Compartidos: <b style="color:#c4a0e0">'+d.s+'</b>  Comentarios: <b>'+d.c+'</b>');});
+      row.addEventListener('mousemove',moveTip);
+      row.addEventListener('mouseleave',hideTip);
+      tel.appendChild(row);
+    })(tops[i],i);
+  }
+
+  // TOOLTIP
+  var tip=document.getElementById('tip');
+  function showTip(e,date,body){
+    document.getElementById('tip-d').textContent=date;
+    document.getElementById('tip-b').innerHTML=body;
+    tip.classList.add('on');moveTip(e);
+  }
+  function moveTip(e){tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-10)+'px';}
+  function hideTip(){tip.classList.remove('on');}
+
+  // PANEL SWITCH
+  window.show=function(id){
+    ['tt','fb'].forEach(function(p){
+      document.getElementById('panel-'+p).classList.remove('on');
+      document.getElementById('tab-'+p).className='tab';
+    });
+    document.getElementById('panel-'+id).classList.add('on');
+    document.getElementById('tab-'+id).className='tab act-'+id;
+    if(id==='fb'){
+      setTimeout(function(){
+        var dOrg=document.getElementById('dOrg');
+        if(dOrg)dOrg.style.strokeDashoffset='0';
+        var bars=[['bR',100],['bF',8.8],['bM',8.3],['bL',1.8],['bO',1.4],['bIM',100],['bIR',100]];
+        for(var i=0;i<bars.length;i++){
+          var el=document.getElementById(bars[i][0]);
+          if(el){el.style.transition='width 1s ease';el.style.width=bars[i][1]+'%';}
+        }
+      },80);
+    }
+  };
+})();
 </script>
 </body>
 </html>
+
